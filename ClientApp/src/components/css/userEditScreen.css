@@ -1,0 +1,31 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.userEditScreen-block {
+    margin-top: 100px;
+    width: 400px;
+    height: 500px;
+    border: 1px solid;
+    border-radius: 10px;
+    border-color: darkcyan;
+}
+
+.userEditScreen-block_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.userEditScreen-block_form div {
+    margin-bottom: 15px;
+}
+.userEditScreen-block_buttons {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}

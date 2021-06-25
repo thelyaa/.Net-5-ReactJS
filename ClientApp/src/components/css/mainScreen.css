@@ -1,0 +1,25 @@
+.mainScreen-block_card {
+    
+    margin-top: 30px;
+    width: 445px;
+   
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.mainScreen-block {
+    
+}
+
+#filled-search{
+    
+    width: 420px;
+}
+
+.mainScreen-block_searchInput {
+    margin-top: 5%;
+}
