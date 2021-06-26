@@ -3,8 +3,6 @@ import { SignInScreen } from './components/SignInScreen';
 import { MainScreen } from './components/MainScreen';
 import { UserEditScreen } from './components/UserEditScreen';
 import { EditPasswordScreen } from './components/EditPasswordScreen';
-import axios from 'axios';
-import { Cookies } from 'react-cookie';
 import './custom.css'
 
 export default class App extends Component {
@@ -21,7 +19,14 @@ export default class App extends Component {
     }
 
     setLoginScreenData(userData, usersList) {
-        this.setState({ currentScreen: "MainScreen", userData: userData, usersList: usersList });
+        let sortArr = [];
+        sortArr.unshift(userData);
+        usersList.map(item => {
+            if (item.id != userData.id)
+            sortArr.push(item)
+        })
+        console.log(sortArr);
+        this.setState({ currentScreen: "MainScreen", userData: userData, usersList: sortArr });
     }
     setEditScreenData(usersList) {
         this.setState({ currentScreen: "MainScreen", usersList: usersList });

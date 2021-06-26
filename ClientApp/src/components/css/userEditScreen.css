@@ -29,3 +29,7 @@ body {
     align-items: center;
     justify-content: left;
 }
+
+.userEditScreen-block_form_passwordField {
+    margin-left: 61px;
+}

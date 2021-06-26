@@ -11,15 +11,24 @@ body {
     justify-content: center
 }
 
-.mainScreen-block {
-    
+.form-dialog-content{
+    display: flex;
+    flex-direction: column;
 }
 
-#filled-search{
-    
+#filled-search {
     width: 420px;
 }
 
 .mainScreen-block_searchInput {
     margin-top: 5%;
+}
+
+.mainScreen-block_card_cardcontent_userDiv {
+    display: flex;
+    align-items: center;
+}
+
+.form-dialog-content_textField{
+    margin-bottom: 20px
 }

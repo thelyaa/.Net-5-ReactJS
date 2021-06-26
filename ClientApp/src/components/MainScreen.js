@@ -12,6 +12,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 
 export class MainScreen extends Component {
 
@@ -29,7 +32,7 @@ export class MainScreen extends Component {
             symbols: 0,
             isErrorDialogOpen: false,
             userData: [],
-            isCreateDialogOpen: false
+            isCreateDialogOpen: false,
         };
         this.onInputChange = this.onInputChange.bind(this);
         this.getUserInfo = this.getUserInfo.bind(this);
@@ -73,9 +76,15 @@ export class MainScreen extends Component {
                         return (
                             <Card className="mainScreen-block_card">
                                 <CardContent key={item.id} className="mainScreen-block_card_cardcontent">
+                                    <div className="mainScreen-block_card_cardcontent_userDiv">
                                     <Typography variant="h5" component="h2" noWrap>{item.firstName + ' ' + item.lastName}</Typography>
+                                    {item.id === this.cookies.get('userId') ? (
+                                        
+                                           <AccountCircleIcon></AccountCircleIcon>
+                                    ) : ""}</div>
                                     <Typography noWrap>{item.email}</Typography>
                                     <Typography noWrap>{item.phone}</Typography>
+                                    
                                 </CardContent>
 
                                 <Button onClick={() => { this.getUserInfo(item) }}>
@@ -88,7 +97,12 @@ export class MainScreen extends Component {
                                     <Button onClick={() => { this.deleteUser(item) }}>
                                         delete
                                     </Button>
-                                 ):""}                              
+                                ) : ""}
+                                {this.cookies.get('userRole') === "2" && item.role !== "2" ? (
+                                    < Button onClick={() => { this.deleteUser(item) }}>
+                                        delete
+                                    </Button>
+                                ) : ""}
                             </Card>
                         )
                     })}</div>
@@ -101,7 +115,12 @@ export class MainScreen extends Component {
                         return (
                             <Card className="mainScreen-block_card">
                                 <CardContent key={item.id} className="mainScreen-block_card_cardcontent">
-                                    <Typography variant="h5" component="h2" noWrap>{item.firstName + ' ' + item.lastName}</Typography>
+                                    <div className="mainScreen-block_card_cardcontent_userDiv">
+                                        <Typography variant="h5" component="h2" noWrap>{item.firstName + ' ' + item.lastName}</Typography>
+                                        {item.id === this.cookies.get('userId') ? (
+
+                                            <AccountCircleIcon></AccountCircleIcon>
+                                        ) : ""}</div>
                                     <Typography noWrap>{item.email}</Typography>
                                     <Typography noWrap>{item.phone}</Typography>
                                 </CardContent>
@@ -116,7 +135,12 @@ export class MainScreen extends Component {
                                     <Button onClick={() => { this.deleteUser(item) }}>
                                         delete
                                     </Button>
-                                 ):""}  
+                                ) : ""}
+                                {this.cookies.get('userRole') === "2" && item.role !== "2" ? (
+                                    < Button onClick={() => { this.deleteUser(item) }}>
+                                        delete
+                                    </Button>
+                                    ):""}
                             </Card>
                         )
                 })}</div>
@@ -189,8 +213,7 @@ export class MainScreen extends Component {
     };
 
     openCreateUser() {
-        this.setState({ isCreateDialogOpen: true });
-        
+        this.setState({ isCreateDialogOpen: true });     
     }
 
     updateUsersList() {
@@ -219,16 +242,33 @@ export class MainScreen extends Component {
             phone: this.state.phone,
             role: this.state.role
         }
-        
-        axios.post('https://localhost:5001/createUser', params, {
-            headers: {
-                'Content-Type': 'application/json'
+
+        let flag = false;
+        this.props.usersList.map(item => {
+            if (item.email === this.state.email) {
+                alert("This email is already in use");
+                flag = true
             }
-        }).then(res => {
-            console.log(res);
-            this.updateUsersList();
-            this.handleCreateClose();
-        });
+        })
+
+        if (!flag) {
+           
+            axios.post('https://localhost:5001/createUser', params, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(res => {
+                console.log(res);
+                this.updateUsersList();
+                this.handleCreateClose();
+            });
+            
+        }
+        
+    }
+
+    handleChangeRole = (e) => {
+        this.setState({ role: e.target.value });
     }
 
     render() {
@@ -247,7 +287,7 @@ export class MainScreen extends Component {
                 <Dialog open={this.state.isErrorDialogOpen} onClose={() => {
                     this.handleClose()
                 }} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title"></DialogTitle>
+                    <DialogTitle id="form-dialog-title">User info</DialogTitle>
                     <DialogContent>
                         {this.state.userData.map(item => {
                             return (
@@ -270,45 +310,58 @@ export class MainScreen extends Component {
                 <Dialog open={this.state.isCreateDialogOpen} onClose={() => {
                     this.handleCreateClose()
                 }} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title"></DialogTitle>
+                    <DialogTitle id="form-dialog-title">Create user</DialogTitle>
                     <DialogContent>
-                        <TextField
-                            variant="outlined"
-                            label="Email"
-                            value={this.state.email}
-                            name="email"
-                            onChange={this.onInputChange}></TextField>
-                        <TextField
-                            variant="outlined"
-                            type="password"
-                            label="Password"
-                            value={this.state.password}
-                            name="password"
-                            onChange={this.onInputChange}></TextField>
-                        <TextField
-                            variant="outlined"
-                            label="First Name"
-                            value={this.state.firstName}
-                            name="firstName"
-                            onChange={this.onInputChange}></TextField>
-                        <TextField
-                            variant="outlined"
-                            label="Last Name"
-                            value={this.state.lastName}
-                            name="lastName"
-                            onChange={this.onInputChange}></TextField>
-                        <TextField
-                            variant="outlined"
-                            label="Phone"
-                            value={this.state.phone}
-                            name="phone"
-                            onChange={this.onInputChange}></TextField>
-                        <TextField
-                            variant="outlined"
-                            label="Role"
-                            value={this.state.role}
-                            name="role"
-                            onChange={this.onInputChange}></TextField>
+                        <div className="form-dialog-content">
+                            <div className="form-dialog-content_textField">
+                                <TextField
+                                    variant="outlined"
+                                    label="Email"
+                                    value={this.state.email}
+                                    name="email"
+                                    onChange={this.onInputChange}></TextField>
+                            </div>
+                            <div className="form-dialog-content_textField">
+                                <TextField
+                                    variant="outlined"
+                                    type="password"
+                                    label="Password"
+                                    value={this.state.password}
+                                    name="password"
+                                    onChange={this.onInputChange}></TextField>
+                            </div>
+                            <div className="form-dialog-content_textField">
+                                <TextField
+                                    variant="outlined"
+                                    label="First Name"
+                                    value={this.state.firstName}
+                                    name="firstName"
+                                    onChange={this.onInputChange}></TextField>
+                            </div>
+                            <div className="form-dialog-content_textField">
+                                <TextField
+                                    variant="outlined"
+                                    label="Last Name"
+                                    value={this.state.lastName}
+                                    name="lastName"
+                                    onChange={this.onInputChange}></TextField>
+                            </div>
+                            <div className="form-dialog-content_textField">
+                                <TextField
+                                    variant="outlined"
+                                    label="Phone"
+                                    value={this.state.phone}
+                                    name="phone"
+                                    onChange={this.onInputChange}></TextField>
+                            </div>
+                            <div className="form-dialog-content_textField">
+                                <Select onChange={this.handleChangeRole}
+                                    value={this.state.role}>
+                                    <MenuItem value={'2'}>Manager</MenuItem>
+                                    <MenuItem value={'3'}>Staff</MenuItem>
+                                </Select>
+                            </div>
+                        </div>
                     </DialogContent>
                     <DialogActions>
                         <Button size="large" color="secondary" onClick={() => {

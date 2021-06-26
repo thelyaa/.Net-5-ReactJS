@@ -210,5 +210,37 @@ namespace webApplication.Controllers
             cmd.ExecuteNonQuery();
             return "success";
         }
+
+        [HttpPost("getUserById")]
+        [Consumes("application/json")]
+        public Users getUser(Users id)
+        {
+            SqlConnection con = new SqlConnection(@"Data Source=DESKTOP-K3CULB3\SQLEXPRESS;Initial Catalog=React_Net5;Integrated Security=True");
+            con.Open();
+            SqlCommand cmd = con.CreateCommand();
+            cmd.CommandType = CommandType.Text;
+            Console.WriteLine(id);
+            cmd.CommandText = "Select * From Users Where _id='" + id.Id + "';";
+
+            SqlDataAdapter da = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+
+            Users userdata = new Users();
+            DataTableReader dtreader = dt.CreateDataReader();
+            while (dtreader.Read())
+            {
+                userdata.Id = dtreader["_id"].ToString();
+                userdata.Email = dtreader["Email"].ToString();
+                userdata.Password = dtreader["Password"].ToString();
+                userdata.FirstName = dtreader["FirstName"].ToString();
+                userdata.LastName = dtreader["LastName"].ToString();
+                userdata.Phone = dtreader["Phone"].ToString();
+                userdata.Role = dtreader["RoleId"].ToString();
+            }
+            con.Close();
+            //Console.WriteLine(user);
+            return userdata;
+        }
     }
 }

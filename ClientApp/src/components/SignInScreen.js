@@ -22,6 +22,8 @@ export class SignInScreen extends Component {
         console.log("id", id);
         if (this.cookies.get('userId') !== undefined)
             this.loadUserData(this.cookies.get('userId'));
+        this.emailReg = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
+        this.passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\s]).{8,}/;
     }
 
     loadUserData(userId) {
@@ -48,8 +50,8 @@ export class SignInScreen extends Component {
 
     signInFunction = (e) => {
 
-        if (this.state.email !== "" && this.state.password !== "") {
-        
+        if (this.state.email !== "" && this.state.password !== "" && this.passwordReg.test(this.state.password) && this.emailReg.test(this.state.email)) {
+
             let params = {
                 email: this.state.email,
                 password: this.state.password
@@ -67,8 +69,10 @@ export class SignInScreen extends Component {
                     this.cookies.set('userRole', res.data.role, { path: '/' });
                     this.getUsers(res.data.role);
                 }
+                else alert("Wrong email or password");
             });
         }
+        else alert("Fill correctly both field");
     }
 
     getUsers(role) {
@@ -87,6 +91,8 @@ export class SignInScreen extends Component {
         });
     }
 
+
+
     render() {
         return (
             <div className="signInScreen-block">
@@ -97,7 +103,8 @@ export class SignInScreen extends Component {
                         name="email"
                         variant="outlined"
                         onChange={this.onInputChange}
-                        value={this.state.email}>
+                        value={this.state.email}
+                        helperText={this.state.email !== "" && !this.emailReg.test(this.state.email) ? 'Not email format' : '' }>
                     </TextField>
                     <TextField
                         id="outlined-password-input"
@@ -108,6 +115,7 @@ export class SignInScreen extends Component {
                         name="password"
                         onChange={this.onInputChange}
                         value={this.state.value}
+                        helperText={this.state.password !== "" && !this.passwordReg.test(this.state.password) ? 'Incorrect password' : ''}
                     />
                 
                     <div><Button variant="contained" color="primary" onClick={() => { this.signInFunction() }}>Sign In</Button></div>
