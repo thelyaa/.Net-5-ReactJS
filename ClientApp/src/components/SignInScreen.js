@@ -22,8 +22,7 @@ export class SignInScreen extends Component {
         console.log("id", id);
         if (this.cookies.get('userId') !== undefined)
             this.loadUserData(this.cookies.get('userId'));
-        this.emailReg = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
-        this.passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\s]).{8,}/;
+        this.emailReg = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;   
     }
 
     loadUserData(userId) {
@@ -50,7 +49,7 @@ export class SignInScreen extends Component {
 
     signInFunction = (e) => {
 
-        if (this.state.email !== "" && this.state.password !== "" && this.passwordReg.test(this.state.password) && this.emailReg.test(this.state.email)) {
+        if (this.state.email !== "" && this.state.password !== "" && this.emailReg.test(this.state.email)) {
 
             let params = {
                 email: this.state.email,
@@ -115,7 +114,6 @@ export class SignInScreen extends Component {
                         name="password"
                         onChange={this.onInputChange}
                         value={this.state.value}
-                        helperText={this.state.password !== "" && !this.passwordReg.test(this.state.password) ? 'Incorrect password' : ''}
                     />
                 
                     <div><Button variant="contained" color="primary" onClick={() => { this.signInFunction() }}>Sign In</Button></div>

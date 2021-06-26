@@ -38,6 +38,8 @@ export class MainScreen extends Component {
         this.getUserInfo = this.getUserInfo.bind(this);
         this.searchUser = this.searchUser.bind(this);
         this.cookies = new Cookies();
+        this.passwordReg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^\w\s]).{8,}/;
+        this.emailReg = /^[ ]*([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})[ ]*$/i;
     }
 
     onInputChange(event) {
@@ -251,7 +253,7 @@ export class MainScreen extends Component {
             }
         })
 
-        if (!flag) {
+        if (!flag && this.state.email !== "" && this.state.password !== "" && this.state.firstName !== "" && this.state.lastName !== "" && this.state.phone !== "" && this.state.role !== "" ) {
            
             axios.post('https://localhost:5001/createUser', params, {
                 headers: {
@@ -319,6 +321,7 @@ export class MainScreen extends Component {
                                     label="Email"
                                     value={this.state.email}
                                     name="email"
+                                    helperText={this.state.email !== "" && !this.emailReg.test(this.state.email) ? 'Not email format' : ''}
                                     onChange={this.onInputChange}></TextField>
                             </div>
                             <div className="form-dialog-content_textField">
@@ -328,6 +331,7 @@ export class MainScreen extends Component {
                                     label="Password"
                                     value={this.state.password}
                                     name="password"
+                                    helperText={this.state.password !== "" && !this.passwordReg.test(this.state.password) ? 'Incorrect password' : ''}
                                     onChange={this.onInputChange}></TextField>
                             </div>
                             <div className="form-dialog-content_textField">
